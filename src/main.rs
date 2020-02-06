@@ -6,6 +6,21 @@ struct File {
     data: Vec<u8>,
 }
 
+impl File {
+    fn new(name: &str) -> File {
+        File {
+            name: String::from(name),
+            data: Vec::new(),
+        }
+    }
+
+    fn new_with_data(name: &str, data: &Vec<u8>) -> File {
+        let mut f = File::new(name);
+        f.data = data.clone();
+        f
+    }
+}
+
 fn open(f: &mut File) -> bool {
     true
 }
@@ -23,10 +38,8 @@ fn read(f: &File, save_to: &mut Vec<u8>) -> usize {
 }
 
 fn main() {
-    let mut f = File {
-        name: String::from("my-file.md"),
-        data: vec![114, 117, 115, 116, 33],
-    };
+    let file_data = vec![114, 117, 115, 116, 33];
+    let mut f = File::new_with_data("my-file.md", &file_data);
     println!("{:?}", f);
 
     open(&mut f);
