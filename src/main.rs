@@ -20,36 +20,35 @@ impl File {
         f
     }
 
-    fn read(self: &File, save_to: &mut Vec<u8>) -> usize {
+    fn read(self: &File, save_to: &mut Vec<u8>) -> Result<usize, String> {
         let mut tmp = self.data.clone();
         let read_size = tmp.len();
         save_to.reserve(read_size);
         save_to.append(&mut tmp);
-        read_size
+        Ok(read_size)
     }
 }
 
-fn open(f: &mut File) -> bool {
-    true
+fn open(f: File) -> Result<File, String> {
+    Ok(f)
 }
 
-fn close(f: &mut File) -> bool {
-    true
+fn close(f: File) -> Result<File, String> {
+    Ok(f)
 }
 
 fn main() {
     let file_data = vec![114, 117, 115, 116, 33];
-    let mut f = File::new_with_data("my-file.md", &file_data);
+    let f = File::new_with_data("my-file.md", &file_data);
     println!("{:?}", f);
 
-    open(&mut f);
-
     let mut buffer: Vec<u8> = vec![];
-    let f_size = f.read(&mut buffer);
+
+    let f = open(f).unwrap();
+    let f_size = f.read(&mut buffer).unwrap();
     println!("file {} has a size of {} bytes", &f.name, f_size);
+    let f = close(f).unwrap();
 
     let txt = String::from_utf8_lossy(&buffer);
     println!("file {} has text: {}", &f.name, txt);
-
-    close(&mut f);
 }
