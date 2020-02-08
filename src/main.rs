@@ -1,9 +1,16 @@
 #![allow(unused_variables)]
 
+#[derive(Debug, PartialEq)]
+enum FileState {
+    Closed,
+    Open,
+}
+
 #[derive(Debug)]
 struct File {
     name: String,
     data: Vec<u8>,
+    state: FileState,
 }
 
 impl File {
@@ -11,6 +18,7 @@ impl File {
         File {
             name: String::from(name),
             data: Vec::new(),
+            state: FileState::Closed,
         }
     }
 
@@ -21,6 +29,10 @@ impl File {
     }
 
     fn read(self: &File, save_to: &mut Vec<u8>) -> Result<usize, String> {
+        if self.state != FileState::Open {
+            return Err(String::from("File must be open to read from it"));
+        }
+
         let mut tmp = self.data.clone();
         let read_size = tmp.len();
         save_to.reserve(read_size);
@@ -29,11 +41,13 @@ impl File {
     }
 }
 
-fn open(f: File) -> Result<File, String> {
+fn open(mut f: File) -> Result<File, String> {
+    f.state = FileState::Open;
     Ok(f)
 }
 
-fn close(f: File) -> Result<File, String> {
+fn close(mut f: File) -> Result<File, String> {
+    f.state = FileState::Closed;
     Ok(f)
 }
 
@@ -43,6 +57,10 @@ fn main() {
     println!("{:?}", f);
 
     let mut buffer: Vec<u8> = vec![];
+
+    if f.read(&mut buffer).is_err() {
+        println!("Error checking works!");
+    }
 
     let f = open(f).unwrap();
     let f_size = f.read(&mut buffer).unwrap();
