@@ -1,11 +1,14 @@
+//! Simulate files
+
 use std::fmt;
 
 trait Read {
     fn read(self: &Self, save_to: &mut Vec<u8>) -> Result<usize, String>;
 }
 
+/// Represents the states in which a file can reside.
 #[derive(PartialEq)]
-enum FileState {
+pub enum FileState {
     Closed,
     Open,
 }
@@ -19,10 +22,11 @@ impl fmt::Display for FileState {
     }
 }
 
-struct File {
-    name: String,
+/// Represents a file on the file system.
+pub struct File {
+    pub name: String,
     data: Vec<u8>,
-    state: FileState,
+    pub state: FileState,
 }
 
 impl fmt::Display for File {
@@ -32,7 +36,8 @@ impl fmt::Display for File {
 }
 
 impl File {
-    fn new(name: &str) -> File {
+    /// New files need a name and are assumed to be empty and closed.
+    pub fn new(name: &str) -> File {
         File {
             name: String::from(name),
             data: Vec::new(),
@@ -40,7 +45,8 @@ impl File {
         }
     }
 
-    fn new_with_data(name: &str, data: &Vec<u8>) -> File {
+    /// New files can also be created with data.
+    pub fn new_with_data(name: &str, data: &Vec<u8>) -> File {
         let mut f = File::new(name);
         f.data = data.clone();
         f
