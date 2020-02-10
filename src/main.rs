@@ -1,4 +1,6 @@
-#![allow(unused_variables)]
+trait Read {
+    fn read(self: &Self, save_to: &mut Vec<u8>) -> Result<usize, String>;
+}
 
 #[derive(Debug, PartialEq)]
 enum FileState {
@@ -27,7 +29,9 @@ impl File {
         f.data = data.clone();
         f
     }
+}
 
+impl Read for File {
     fn read(self: &File, save_to: &mut Vec<u8>) -> Result<usize, String> {
         if self.state != FileState::Open {
             return Err(String::from("File must be open to read from it"));
@@ -37,6 +41,7 @@ impl File {
         let read_size = tmp.len();
         save_to.reserve(read_size);
         save_to.append(&mut tmp);
+
         Ok(read_size)
     }
 }
