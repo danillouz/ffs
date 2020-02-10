@@ -4,7 +4,7 @@ trait Read {
     fn read(self: &Self, save_to: &mut Vec<u8>) -> Result<usize, String>;
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 enum FileState {
     Closed,
     Open,
@@ -19,11 +19,16 @@ impl fmt::Display for FileState {
     }
 }
 
-#[derive(Debug)]
 struct File {
     name: String,
     data: Vec<u8>,
     state: FileState,
+}
+
+impl fmt::Display for File {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "<{} ({})>", self.name, self.state)
+    }
 }
 
 impl File {
@@ -70,7 +75,7 @@ fn close(mut f: File) -> Result<File, String> {
 fn main() {
     let file_data = vec![114, 117, 115, 116, 33];
     let f = File::new_with_data("my-file.md", &file_data);
-    println!("{:?}", f);
+    println!("{}", f);
 
     let mut buffer: Vec<u8> = vec![];
 
