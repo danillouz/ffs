@@ -1,3 +1,5 @@
+use std::fmt;
+
 trait Read {
     fn read(self: &Self, save_to: &mut Vec<u8>) -> Result<usize, String>;
 }
@@ -6,6 +8,15 @@ trait Read {
 enum FileState {
     Closed,
     Open,
+}
+
+impl fmt::Display for FileState {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            FileState::Open => write!(f, "OPEN"),
+            FileState::Closed => write!(f, "CLOSED"),
+        }
+    }
 }
 
 #[derive(Debug)]
